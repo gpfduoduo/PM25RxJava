@@ -1,4 +1,4 @@
-package com.guo.duoduo.pm25rxjava.Utils;
+package com.guo.duoduo.pm25rxjava.utils;
 
 
 import java.util.Locale;
