@@ -12,4 +12,10 @@
     tools:showIn="@layout/activity_main"
     tools:context=".ui.MainActivity">
 
+    <TextView
+        style="@style/text_big"
+        android:id="@+id/tv_click_add_city"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:text="@string/tv_click_to_add_city"/>
 </RelativeLayout>

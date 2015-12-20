@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">PM25RxJava</string>
+    <string name="main_name">空气质量</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="add_city">添加城市</string>
+    <string name="tv_click_to_add_city">点击添加城市</string>
+    <string name="btn_search">搜索</string>
+    <string name="et_add_city_hint">请输入城市名称</string>
 </resources>

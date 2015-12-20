@@ -40,8 +40,12 @@ public class SplashActivity extends AppCompatActivity
                     @Override
                     public void onCompleted()
                     {
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                        finish();
+                        if (!isUnsubscribed())
+                        {
+                            startActivity(new Intent(SplashActivity.this,
+                                MainActivity.class));
+                            finish();
+                        }
                     }
 
                     @Override

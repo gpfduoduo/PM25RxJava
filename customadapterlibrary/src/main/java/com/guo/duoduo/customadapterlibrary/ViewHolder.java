@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 
 /**
  * Created by 郭攀峰 on 2015/11/21.
@@ -53,6 +55,11 @@ public class ViewHolder
     }
 
     public ImageView getImageView(int viewId)
+    {
+        return getView(viewId);
+    }
+
+    public LinearLayout getLinearLayout(int viewId)
     {
         return getView(viewId);
     }

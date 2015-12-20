@@ -51,10 +51,10 @@ public abstract class CustomAdapter<T> extends BaseAdapter
     {
         ViewHolder viewHolder = ViewHolder.getViewHolder(view, viewGroup, mResLayoutId,
             mLayoutInflater);
-        convert(viewHolder, mList.get(i));
+        convert(viewHolder, mList.get(i), i);
 
         return viewHolder.getConvertView();
     }
 
-    public abstract void convert(ViewHolder viewHolder, T t);
+    public abstract void convert(ViewHolder viewHolder, T t, int position);
 }

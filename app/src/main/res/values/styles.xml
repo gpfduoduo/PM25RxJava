@@ -35,4 +35,19 @@
         </item>
     </style>
 
+    <style name="text_big"
+        parent="android:style/Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">25dp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="text_middle"
+        parent="android:style/Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>
