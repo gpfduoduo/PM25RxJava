@@ -12,25 +12,11 @@
     tools:showIn="@layout/activity_add_city"
     tools:context=".ui.AddCityActivity">
 
-    <LinearLayout
-        android:id="@+id/lay_search"
-        android:orientation="horizontal"
+    <EditText
+        android:id="@+id/et_search"
+        android:hint="@string/et_add_city_hint"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <EditText
-            android:id="@+id/et_search"
-            android:layout_weight="1"
-            android:hint="@string/et_add_city_hint"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <Button
-            android:id="@+id/btn_search"
-            android:text="@string/btn_search"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+        android:layout_height="50dp"/>
 
     <ProgressBar
         android:layout_centerInParent="true"
@@ -39,7 +25,7 @@
         android:layout_height="wrap_content"/>
 
     <ListView
-        android:layout_below="@+id/lay_search"
+        android:layout_below="@+id/et_search"
         android:id="@+id/lv_city"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>

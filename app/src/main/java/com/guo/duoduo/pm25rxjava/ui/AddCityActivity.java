@@ -2,13 +2,7 @@ package com.guo.duoduo.pm25rxjava.ui;
 
 
 import java.io.IOException;
-import java.text.Collator;
-import java.text.RuleBasedCollator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import rx.Observable;
@@ -18,8 +12,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -28,12 +26,16 @@ import android.widget.ProgressBar;
 import com.guo.duoduo.pm25rxjava.R;
 import com.guo.duoduo.pm25rxjava.adapter.CityAdapter;
 import com.guo.duoduo.pm25rxjava.entity.City;
+import com.guo.duoduo.pm25rxjava.utils.CityManager;
 import com.guo.duoduo.pm25rxjava.utils.HttpUrl;
 import com.guo.duoduo.pm25rxjava.utils.MediaIndexer;
 import com.guo.duoduo.pm25rxjava.utils.PM25Url;
 
 
-public class AddCityActivity extends BaseActivity implements View.OnClickListener
+public class AddCityActivity extends BaseActivity
+    implements
+        TextWatcher,
+        AdapterView.OnItemClickListener
 {
     private static final String tag = AddCityActivity.class.getSimpleName();
     private ProgressBar mProgressBar;
@@ -62,38 +64,41 @@ public class AddCityActivity extends BaseActivity implements View.OnClickListene
     {
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mEtCity = (EditText) findViewById(R.id.et_search);
-        mSearch = (Button) findViewById(R.id.btn_search);
-        mSearch.setOnClickListener(this);
+        mEtCity.addTextChangedListener(this);
         mLvCity = (ListView) findViewById(R.id.lv_city);
+        mLvCity.setOnItemClickListener(this);
     }
 
     private void getSupportCity()
     {
-        mSubscription = Observable.create(new Observable.OnSubscribe<List<City>>()
-        {
-            @Override
-            public void call(Subscriber<? super List<City>> subscriber)
-            {
-                if (subscriber.isUnsubscribed())
-                    return;
-                try
+        mSubscription = Observable
+                .create(new Observable.OnSubscribe<List<City>>()
                 {
-                    String url = PM25Url.getAllCityBaseInfo();
-                    String city = HttpUrl.getData(url);
-                    Log.d(tag, "city = " + city);
-                    subscriber.onNext(processCityData(city));
-                    subscriber.onCompleted();
-                }
-                catch (IOException e)
-                {
-                    subscriber.onError(e);
-                }
-                catch (Exception e)
-                {
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.newThread())
+                    @Override
+                    public void call(Subscriber<? super List<City>> subscriber)
+                    {
+                        if (subscriber.isUnsubscribed())
+                            return;
+                        try
+                        {
+                            String url = PM25Url.getAllCityBaseInfo();
+                            String city = HttpUrl.getData(url);
+                            Log.d(tag, "city = " + city);
+                            subscriber.onNext(CityManager.getInstance(
+                                getApplicationContext()).processCityData(city));
+                            subscriber.onCompleted();
+                        }
+                        catch (IOException e)
+                        {
+                            subscriber.onError(e);
+                        }
+                        catch (Exception e)
+                        {
+                            subscriber.onError(e);
+                        }
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Subscriber<List<City>>()
                 {
                     @Override
@@ -125,64 +130,64 @@ public class AddCityActivity extends BaseActivity implements View.OnClickListene
                 });
     }
 
-    private List<City> processCityData(String str)
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after)
     {
-        List<City> list = new ArrayList<>();
-        String cityData = str.substring(str.indexOf("[") + 1, str.length() - 2);
-        String[] cityArray = cityData.split(",");
-        String name = null;
-        String key = null;
-        String sortKey = null;
-        if (cityArray != null)
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count)
+    {
+        try
         {
-            for (int i = 0, len = cityArray.length; i < len; i++)
+            String key = PM25Url.ChineseToSpell(s.toString());
+            if (mList != null)
             {
-                name = cityArray[i].substring(1, cityArray[i].length() - 1);
+                for (int i = 0, len = mList.size(); i < len; i++)
+                {
+                    String cityName = mList.get(i).getCityName();
+                    cityName = PM25Url.ChineseToSpell(cityName);
+                    if (cityName.contains(key))
+                    {
+                        mLvCity.setSelection(i);
+                        break;
+                    }
+                }
+            }
+        }
+        catch (BadHanyuPinyinOutputFormatCombination e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s)
+    {
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        City city = (City) mCityAdapter.getItem(position);
+        Log.d(tag, "city = " + city.getCityName());
+        if (city != null)
+        {
+            if (!TextUtils.isEmpty(city.getCityName()))
+            {
                 try
                 {
-                    key = PM25Url.ChineseToSpell(name);
+                    CityManager.getInstance(getApplicationContext()).setCity(
+                        PM25Url.ChineseToSpell(city.getCityName()));
+                    finish();
                 }
                 catch (BadHanyuPinyinOutputFormatCombination e)
                 {
                     e.printStackTrace();
-                    key = null;
-                }
-
-                if (key != null)
-                {
-                    sortKey = PM25Url.getSortKey(key);
-                    City cityInfo = new City(name, sortKey);
-                    list.add(cityInfo);
                 }
             }
-
-            if (list != null && list.size() > 0)
-            {
-                Comparator<City> com = new Comparator<City>()
-                {
-                    RuleBasedCollator collator = (RuleBasedCollator) Collator
-                            .getInstance(Locale.US);
-
-                    @Override
-                    public int compare(City lhs, City rhs)
-                    {
-                        return collator.compare(lhs.getSortKey(), rhs.getSortKey());
-                    }
-                };
-                Collections.sort(list, com); // according to name
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public void onClick(View v)
-    {
-        switch (v.getId())
-        {
-            case R.id.btn_search :
-
-                break;
         }
     }
 
