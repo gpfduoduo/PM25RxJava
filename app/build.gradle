@@ -28,4 +28,5 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.0.1'
     compile project(':customadapterlibrary')
     compile files('lib/pinyin4j-2.5.0.jar')
+    compile files('lib/fastjson-1.1.43.android.jar')
 }
