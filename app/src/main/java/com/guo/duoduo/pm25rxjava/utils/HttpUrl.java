@@ -1,5 +1,6 @@
 package com.guo.duoduo.pm25rxjava.utils;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,7 +25,7 @@ public class HttpUrl
             URL url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            connection.setReadTimeout(5000);
+            connection.setReadTimeout(10 * 1000);
             //连接
             connection.connect();
 

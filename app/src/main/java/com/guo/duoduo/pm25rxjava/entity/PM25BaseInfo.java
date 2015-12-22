@@ -1,4 +1,4 @@
-package com.guo.duoduo.pm25rxjava.adapter;
+package com.guo.duoduo.pm25rxjava.entity;
 
 
 import java.io.Serializable;
