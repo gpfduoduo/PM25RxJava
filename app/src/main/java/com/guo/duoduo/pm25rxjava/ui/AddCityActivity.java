@@ -177,16 +177,10 @@ public class AddCityActivity extends BaseActivity
         {
             if (!TextUtils.isEmpty(city.getCityName()))
             {
-                try
-                {
-                    CityManager.getInstance(getApplicationContext()).setCity(
-                        PM25Url.ChineseToSpell(city.getCityName()));
-                    finish();
-                }
-                catch (BadHanyuPinyinOutputFormatCombination e)
-                {
-                    e.printStackTrace();
-                }
+                CityManager.getInstance(getApplicationContext()).setCity(
+                    city.getCityName());
+                setResult(RESULT_OK);
+                finish();
             }
         }
     }
