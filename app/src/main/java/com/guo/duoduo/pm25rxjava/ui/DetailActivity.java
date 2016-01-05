@@ -10,7 +10,6 @@ import com.guo.duoduo.pm25rxjava.R;
 
 public class DetailActivity extends BaseActivity
 {
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

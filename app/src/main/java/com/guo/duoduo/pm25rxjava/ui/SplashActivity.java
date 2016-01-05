@@ -1,11 +1,6 @@
 package com.guo.duoduo.pm25rxjava.ui;
 
 
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +12,21 @@ import android.widget.TextView;
 
 import com.guo.duoduo.pm25rxjava.R;
 
+import java.util.concurrent.TimeUnit;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+
 
 public class SplashActivity extends AppCompatActivity
 {
-
-    private TextView tvSplash;
-    private ImageView imgSplash;
+    @InjectView(R.id.tv_splash)
+    TextView tvSplash;
+    @InjectView(R.id.img_splash)
+    ImageView imgSplash;
     private static final int DELAY = 2;
     private static final int ANIMATION = DELAY * 1000;
 
@@ -31,7 +35,7 @@ public class SplashActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        ButterKnife.inject(this);
         initWidget();
 
         Observable.timer(DELAY, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
@@ -70,9 +74,7 @@ public class SplashActivity extends AppCompatActivity
         set.addAnimation(alphaAnimation);
         set.addAnimation(animation);
         set.setFillAfter(true);
-        tvSplash = (TextView) findViewById(R.id.tv_splash);
         tvSplash.startAnimation(set);
-        imgSplash = (ImageView) findViewById(R.id.img_splash);
         imgSplash.startAnimation(set);
     }
 

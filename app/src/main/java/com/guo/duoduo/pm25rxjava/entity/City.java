@@ -1,9 +1,13 @@
 package com.guo.duoduo.pm25rxjava.entity;
 
 
+import lombok.Data;
+
+
 /**
  * Created by 郭攀峰 on 2015/12/20.
  */
+@Data
 public class City
 {
     /**
@@ -25,23 +29,4 @@ public class City
         this.sortKey = sortKey;
     }
 
-    public String getCityName()
-    {
-        return cityName;
-    }
-
-    public void setCityName(String cityName)
-    {
-        this.cityName = cityName;
-    }
-
-    public String getSortKey()
-    {
-        return sortKey;
-    }
-
-    public void setSortKey(String sortKey)
-    {
-        this.sortKey = sortKey;
-    }
 }

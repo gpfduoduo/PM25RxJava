@@ -29,4 +29,6 @@ dependencies {
     compile project(':customadapterlibrary')
     compile files('lib/pinyin4j-2.5.0.jar')
     compile files('lib/fastjson-1.1.43.android.jar')
+    compile 'com.jakewharton:butterknife:5.1.1'
+    provided "org.projectlombok:lombok:1.12.6"
 }

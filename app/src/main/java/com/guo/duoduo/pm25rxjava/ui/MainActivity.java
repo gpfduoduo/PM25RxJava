@@ -21,6 +21,9 @@ import com.guo.duoduo.pm25rxjava.utils.HttpUrl;
 import com.guo.duoduo.pm25rxjava.utils.PM25Url;
 import com.guo.duoduo.pm25rxjava.view.CustomGaugeView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -30,38 +33,36 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {
-
     private static final String tag = MainActivity.class.getSimpleName();
-    private TextView tvAddCity;
-    private TextView tvAirResult;
-    private ProgressBar mProgressBar;
-    private CustomGaugeView mGaugeView;
+
+    @InjectView(R.id.tv_click_add_city)
+    TextView tvAddCity;
+    @InjectView(R.id.air_result)
+    TextView tvAirResult;
+    @InjectView(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @InjectView(R.id.gauge_view)
+    CustomGaugeView mGaugeView;
+    @InjectView(R.id.tv_cur_city)
+    TextView mTvCurCity;
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
     private Subscription mSubscription;
-    private TextView mTvCurCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        ButterKnife.inject(this);
         initWidget();
         initData();
     }
 
     private void initWidget()
     {
-        tvAddCity = (TextView) findViewById(R.id.tv_click_add_city);
-        tvAddCity.setOnClickListener(this);
-        tvAirResult = (TextView) findViewById(R.id.air_result);
-        mGaugeView = (CustomGaugeView) findViewById(R.id.gauge_view);
+        setSupportActionBar(toolbar);
         mGaugeView.setVisibility(View.GONE);
-        mGaugeView.setOnClickListener(this);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mTvCurCity = (TextView) findViewById(R.id.tv_cur_city);
-        mTvCurCity.setOnClickListener(this);
     }
 
     private void initData()
@@ -76,13 +77,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else
         {
             mTvCurCity.setText(city);
+            getCityAir(city);
         }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         String city = CityManager.getInstance(getApplicationContext()).getCity();
-        Log.d(tag, "onResume city name=" + city);
+        Log.d(tag, "onActivityResult city name=" + city);
         if (!TextUtils.isEmpty(city))
         {
             Log.d(tag, "city = " + city);
@@ -93,19 +95,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @OnClick({R.id.tv_click_add_city, R.id.tv_cur_city, R.id.gauge_view})
     public void onClick(View view)
     {
         switch (view.getId())
         {
+            case R.id.tv_cur_city :
             case R.id.tv_click_add_city :
                 Intent intent = new Intent(MainActivity.this, AddCityActivity.class);
                 startActivityForResult(intent, 100);
                 break;
             case R.id.gauge_view :
                 startActivity(new Intent(MainActivity.this, DetailActivity.class));
-                break;
-            case R.id.tv_cur_city :
-                startActivity(new Intent(MainActivity.this, AddCityActivity.class));
                 break;
         }
     }

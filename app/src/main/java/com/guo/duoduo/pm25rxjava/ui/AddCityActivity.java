@@ -1,15 +1,7 @@
 package com.guo.duoduo.pm25rxjava.ui;
 
 
-import java.io.IOException;
-import java.util.List;
-
-import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -30,6 +22,17 @@ import com.guo.duoduo.pm25rxjava.utils.CityManager;
 import com.guo.duoduo.pm25rxjava.utils.HttpUrl;
 import com.guo.duoduo.pm25rxjava.utils.MediaIndexer;
 import com.guo.duoduo.pm25rxjava.utils.PM25Url;
+
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
+import java.io.IOException;
+import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class AddCityActivity extends BaseActivity
@@ -177,7 +180,8 @@ public class AddCityActivity extends BaseActivity
             {
                 CityManager.getInstance(getApplicationContext())
                         .setCity(city.getCityName());
-                setResult(RESULT_OK);
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
                 finish();
             }
         }

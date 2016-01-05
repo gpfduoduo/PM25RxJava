@@ -1,14 +1,17 @@
 package com.guo.duoduo.pm25rxjava.entity;
 
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
-import android.text.TextUtils;
+import lombok.Data;
 
 
 /**
  * Created by 10129302 on 15-2-3.
  */
+@Data
 public class PM25BaseInfo implements Serializable
 {
     /**
@@ -44,92 +47,11 @@ public class PM25BaseInfo implements Serializable
      */
     private String position_name;
 
-    public int getAqi()
-    {
-        return aqi;
-    }
-
-    public String getArea()
-    {
-        return area;
-    }
-
-    public int getPm2_5()
-    {
-        return pm2_5;
-    }
-
-    public int getPm2_5_24h()
-    {
-        return pm2_5_24h;
-    }
-
-    public String getQuality()
-    {
-        return quality;
-    }
-
-    public String getTime_point()
-    {
-        return time_point;
-    }
-
-    public void setAqi(int aqi)
-    {
-        this.aqi = aqi;
-    }
-
-    public void setArea(String area)
-    {
-        this.area = area;
-    }
-
-    public void setPm2_5(int pm2_5)
-    {
-        this.pm2_5 = pm2_5;
-    }
-
-    public void setPm2_5_24h(int pm2_5_24h)
-    {
-        this.pm2_5_24h = pm2_5_24h;
-    }
-
-    public void setQuality(String quality)
-    {
-        this.quality = quality;
-    }
-
-    public void setTime_point(String time_point)
-    {
-        this.time_point = time_point;
-    }
-
-    public String getPrimary_pollutant()
-    {
-        return primary_pollutant;
-    }
-
-    public void setPrimary_pollutant(String primary_pollutant)
-    {
-        this.primary_pollutant = primary_pollutant;
-    }
-
-    public String getPosition_name()
-    {
-        return position_name;
-    }
-
-    public void setPosition_name(String position_name)
-    {
-        this.position_name = position_name;
-    }
-
     @Override
     public String toString()
     {
-        return "监测点：" + (TextUtils.isEmpty(position_name) ? "未知地点" : position_name)
-            + "\n" + "空气质量指数：" + aqi + "\n" + "PM2.5值：" + pm2_5 + "\n"
-            + "过去24小时PM2.5平均值：" + pm2_5_24h + "\n" + "空气质量：" + quality + "\n" + "主要污染物："
-            + primary_pollutant;
+        return "监测点：" + (TextUtils.isEmpty(position_name) ? "未知地点" : position_name) + "\n"
+            + "空气质量指数：" + aqi + "\n" + "PM2.5值：" + pm2_5 + "\n" + "过去24小时PM2.5平均值："
+            + pm2_5_24h + "\n" + "空气质量：" + quality + "\n" + "主要污染物：" + primary_pollutant;
     }
 }
