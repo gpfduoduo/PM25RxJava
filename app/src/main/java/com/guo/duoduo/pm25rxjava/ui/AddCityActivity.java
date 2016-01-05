@@ -71,34 +71,32 @@ public class AddCityActivity extends BaseActivity
 
     private void getSupportCity()
     {
-        mSubscription = Observable
-                .create(new Observable.OnSubscribe<List<City>>()
+        mSubscription = Observable.create(new Observable.OnSubscribe<List<City>>()
+        {
+            @Override
+            public void call(Subscriber<? super List<City>> subscriber)
+            {
+                if (subscriber.isUnsubscribed())
+                    return;
+                try
                 {
-                    @Override
-                    public void call(Subscriber<? super List<City>> subscriber)
-                    {
-                        if (subscriber.isUnsubscribed())
-                            return;
-                        try
-                        {
-                            String url = PM25Url.getAllCityBaseInfo();
-                            String city = HttpUrl.getData(url);
-                            Log.d(tag, "city = " + city);
-                            subscriber.onNext(CityManager.getInstance(
-                                getApplicationContext()).processCityData(city));
-                            subscriber.onCompleted();
-                        }
-                        catch (IOException e)
-                        {
-                            subscriber.onError(e);
-                        }
-                        catch (Exception e)
-                        {
-                            subscriber.onError(e);
-                        }
-                    }
-                }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
+                    String url = PM25Url.getAllCityBaseInfo();
+                    String city = HttpUrl.getData(url);
+                    Log.d(tag, "city = " + city);
+                    subscriber.onNext(CityManager.getInstance(getApplicationContext())
+                            .processCityData(city));
+                    subscriber.onCompleted();
+                }
+                catch (IOException e)
+                {
+                    subscriber.onError(e);
+                }
+                catch (Exception e)
+                {
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.newThread())
                 .subscribe(new Subscriber<List<City>>()
                 {
                     @Override
@@ -177,8 +175,8 @@ public class AddCityActivity extends BaseActivity
         {
             if (!TextUtils.isEmpty(city.getCityName()))
             {
-                CityManager.getInstance(getApplicationContext()).setCity(
-                    city.getCityName());
+                CityManager.getInstance(getApplicationContext())
+                        .setCity(city.getCityName());
                 setResult(RESULT_OK);
                 finish();
             }

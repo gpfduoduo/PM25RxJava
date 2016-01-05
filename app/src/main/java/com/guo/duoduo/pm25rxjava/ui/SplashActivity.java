@@ -42,8 +42,8 @@ public class SplashActivity extends AppCompatActivity
                     {
                         if (!isUnsubscribed())
                         {
-                            startActivity(new Intent(SplashActivity.this,
-                                MainActivity.class));
+                            startActivity(
+                                new Intent(SplashActivity.this, MainActivity.class));
                             finish();
                         }
                     }
