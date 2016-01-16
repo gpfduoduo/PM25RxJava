@@ -10,7 +10,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -28,6 +27,8 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 import java.io.IOException;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -41,10 +42,14 @@ public class AddCityActivity extends BaseActivity
         AdapterView.OnItemClickListener
 {
     private static final String tag = AddCityActivity.class.getSimpleName();
-    private ProgressBar mProgressBar;
-    private EditText mEtCity;
-    private Button mSearch;
-    private ListView mLvCity;
+    @InjectView(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @InjectView(R.id.et_search)
+    EditText mEtCity;
+    @InjectView(R.id.lv_city)
+    ListView mLvCity;
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
     private CityAdapter mCityAdapter;
     private List<City> mList;
     private MediaIndexer mMediaIndex;
@@ -55,8 +60,9 @@ public class AddCityActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        ButterKnife.inject(this);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initWidget();
@@ -65,10 +71,7 @@ public class AddCityActivity extends BaseActivity
 
     private void initWidget()
     {
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mEtCity = (EditText) findViewById(R.id.et_search);
         mEtCity.addTextChangedListener(this);
-        mLvCity = (ListView) findViewById(R.id.lv_city);
         mLvCity.setOnItemClickListener(this);
     }
 

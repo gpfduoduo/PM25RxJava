@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -31,8 +32,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener
-{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String tag = MainActivity.class.getSimpleName();
 
     @InjectView(R.id.tv_click_add_city)
@@ -50,8 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Subscription mSubscription;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
@@ -59,34 +58,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initData();
     }
 
-    private void initWidget()
-    {
+    private void initWidget() {
         setSupportActionBar(toolbar);
         mGaugeView.setVisibility(View.GONE);
     }
 
-    private void initData()
-    {
+    private void initData() {
         String city = CityManager.getInstance(getApplicationContext()).getCity();
-        if (TextUtils.isEmpty(city))
-        {
+        if (TextUtils.isEmpty(city)) {
             tvAddCity.setVisibility(View.VISIBLE);
             tvAirResult.setVisibility(View.GONE);
             mGaugeView.setVisibility(View.GONE);
-        }
-        else
-        {
+        } else {
             mTvCurCity.setText(city);
             getCityAir(city);
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String city = CityManager.getInstance(getApplicationContext()).getCity();
         Log.d(tag, "onActivityResult city name=" + city);
-        if (!TextUtils.isEmpty(city))
-        {
+        if (!TextUtils.isEmpty(city)) {
             Log.d(tag, "city = " + city);
             tvAddCity.setVisibility(View.GONE);
             tvAirResult.setVisibility(View.VISIBLE);
@@ -96,86 +88,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @OnClick({R.id.tv_click_add_city, R.id.tv_cur_city, R.id.gauge_view})
-    public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.tv_cur_city :
-            case R.id.tv_click_add_city :
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_cur_city:
+            case R.id.tv_click_add_city:
                 Intent intent = new Intent(MainActivity.this, AddCityActivity.class);
                 startActivityForResult(intent, 100);
                 break;
-            case R.id.gauge_view :
-                startActivity(new Intent(MainActivity.this, DetailActivity.class));
+            case R.id.gauge_view:
                 break;
         }
     }
 
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
-        if (mSubscription != null && !mSubscription.isUnsubscribed())
-        {
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
         }
     }
 
-    private void getCityAir(final String city)
-    {
+    private void getCityAir(final String city) {
         mProgressBar.setVisibility(View.VISIBLE);
-        mSubscription = Observable.create(new rx.Observable.OnSubscribe<PM25BaseInfo>()
-        {
+        mSubscription = Observable.create(new rx.Observable.OnSubscribe<PM25BaseInfo>() {
             @Override
-            public void call(Subscriber<? super PM25BaseInfo> subscriber)
-            {
+            public void call(Subscriber<? super PM25BaseInfo> subscriber) {
                 if (subscriber.isUnsubscribed())
                     return;
 
-                try
-                {
+                try {
                     String cityAir = HttpUrl.getData(
-                        PM25Url.getCityPM25BaseInfo(PM25Url.ChineseToSpell(city)));
+                            PM25Url.getCityPM25BaseInfo(PM25Url.ChineseToSpell(city)));
                     Log.d(tag, "city: " + city + " air: " + cityAir);
                     JSONArray jsonArray = JSONArray.parseArray(cityAir);//返回的是json数组
-                    if (jsonArray != null && jsonArray.size() == 1)
-                    {
+                    if (jsonArray != null && jsonArray.size() == 1) {
                         JSONObject object = (JSONObject) jsonArray.get(0);
                         PM25BaseInfo pm25BaseInfo = JSON.toJavaObject(object,
-                            PM25BaseInfo.class);
+                                PM25BaseInfo.class);
                         subscriber.onNext(pm25BaseInfo);
                         subscriber.onCompleted();
                     }
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
 
-        .subscribe(new Subscriber<PM25BaseInfo>()
-        {
-            @Override
-            public void onCompleted()
-            {
-            }
+                .subscribe(new Subscriber<PM25BaseInfo>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onError(Throwable e)
-            {
-                Log.d(tag, "error: " + e.toString());
-                mProgressBar.setVisibility(View.GONE);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(tag, "error: " + e.toString());
+                        mProgressBar.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onNext(PM25BaseInfo pm25BaseInfo)
-            {
-                Log.d(tag, "air data = " + pm25BaseInfo.toString());
-                mProgressBar.setVisibility(View.GONE);
-                tvAirResult.setText(pm25BaseInfo.toString());
-                mGaugeView.setVisibility(View.VISIBLE);
-                mGaugeView.setValue(pm25BaseInfo.getPm2_5());
-            }
-        });
+                    @Override
+                    public void onNext(PM25BaseInfo pm25BaseInfo) {
+                        Log.d(tag, "air data = " + pm25BaseInfo.toString());
+                        mProgressBar.setVisibility(View.GONE);
+                        tvAirResult.setText(pm25BaseInfo.toString());
+                        mGaugeView.setVisibility(View.VISIBLE);
+                        if (pm25BaseInfo.getPm2_5() > 360) {
+                            mGaugeView.setValue(360);
+                            Toast.makeText(getApplicationContext(), getString(R.string.toast_max), Toast.LENGTH_SHORT).show();
+                        } else
+                            mGaugeView.setValue(pm25BaseInfo.getPm2_5());
+                    }
+                });
     }
 }

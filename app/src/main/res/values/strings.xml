@@ -8,4 +8,6 @@
     <string name="btn_search">搜索</string>
     <string name="et_add_city_hint">请输入城市名称</string>
     <string name="title_activity_detail">结果详情</string>
+    <string name="title_activity_scan">二维码扫描</string>
+    <string name="toast_max">爆表了！！！</string>
 </resources>
